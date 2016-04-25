@@ -110,11 +110,6 @@ Maven -> Installations -> Add... -> Installation home -> dev/tools/apache-maven-
 General -> Editors -> Text Editors -> 选中Insert spaces for tabs -> OK
 Java -> Code Style -> Formatter -> Edit... -> Tab policy -> 选Spaces only -> Profile name -> 改Spaces only -> OK
 
-下Servers -> 删除Pivotal tc Server...
-双击Tomcat v8.0 -> Open
-Server Locations -> 选中Use Tomcat installation...
-Deploy path -> webapps
-
 布局
 左
 Package Explorer
@@ -126,6 +121,13 @@ Progress
 右
 Outline
 
+下Servers -> 删除Pivotal tc Server...
+双击Tomcat v8.0 -> Open
+Server Locations -> 选中Use Tomcat installation...
+Deploy path -> webapps
+command + S 保存
+
+退出
 Confirm Exit -> 选中Always exit without prompt
 ```
 
