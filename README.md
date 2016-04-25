@@ -104,11 +104,16 @@ Workspace默认 -> /Users/CAOLEI/Documents/workspace-sts-3.6.4.RELEASE
 
 Preferences
 Install/Update -> Automatic Update -> 取消Automatically find...
-Java -> Installed JREs -> 选择版本
+Java -> Installed JREs -> 选择JDK1.8 ->只有JRE需添加JDK
 Server -> Runtime Environments -> Add... -> Tomcat v8.0 + Create a new... -> OK -> Tomcat installation directory -> dev/tools/apache-tomcat-8.0.30 -> Finish
 Maven -> Installations -> Add... -> Installation home -> dev/tools/apache-maven-3.3.9 -> Finish -> 选择新添加 -> Apply
 General -> Editors -> Text Editors -> 选中Insert spaces for tabs -> OK
 Java -> Code Style -> Formatter -> Edit... -> Tab policy -> 选Spaces only -> Profile name -> 改Spaces only -> OK
+
+下Servers -> 删除Pivotal tc Server...
+双击Tomcat v8.0 -> Open
+Server Locations -> 选中Use Tomcat installation...
+Deploy path -> webapps
 
 布局
 左
