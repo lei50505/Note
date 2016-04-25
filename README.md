@@ -410,49 +410,110 @@ public class GreetingController {
     }
 }
 
+<!-- 添加log4j -->
+
+		pom.xml
+		<!-- log4j版本 -->
+		<log4j.version>1.2.17</log4j.version>
+		
+		<!-- log4j -->
+		<!-- log4j-1.2.17.jar -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+		
+main/resources -> 新建log4j.properties
+#--------console-----------
+log4j.rootLogger=info,myconsole
+log4j.appender.myconsole=org.apache.log4j.ConsoleAppender
+log4j.appender.myconsole.layout=org.apache.log4j.SimpleLayout
+#--------HTML-----------
+#log4j.rootLogger=error,myfile
+#log4j.appender.myfile=org.apache.log4j.FileAppender
+#log4j.appender.myfile.File=D\:\\error.html
+#log4j.appender.myfile.layout=org.apache.log4j.HTMLLayout
+#--------txt,log-----------
+#log4j.rootLogger=error,myfile
+#log4j.appender.myfile=org.apache.log4j.FileAppender
+#log4j.appender.myfile.File=D\:\\error.log
+#log4j.appender.myfile.layout=org.apache.log4j.PatternLayout
+
 <!-- aspectj-autoproxy -->
+		
+		pom.xml
+		<!-- aspectjweaver版本 -->
+		<aspectjweaver.version>1.8.7</aspectjweaver.version>
+
+		<!-- aspectjweaver -->
+		<!-- aspectjweaver-1.8.7.jar -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${aspectjweaver.version}</version>
+		</dependency>
+		
+		提供@Aspect @Around
+		
+		<!-- servlet-api版本 -->
+		<servlet-api.version>2.5</servlet-api.version>
+		
+		<!-- servlet-api -->
+		<!-- servlet-api-2.5.jar -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>${servlet-api.version}</version>
+		</dependency>
+		
+		提供HttpServletRequest
 
 <aop:aspectj-autoproxy proxy-target-class="true"></aop:aspectj-autoproxy>
+
+cn.rest -> 新建包aspect
+aspect包下新建类ExceptionLogger
+
 @Component
 @Aspect
 public class ExceptionLogger {
-	@Around("within(com.tarena.web.*)")
-	public Object log(ProceedingJoinPoint p) {
-		Object result = null;
-		try {
-			result = p.proceed(); //µ÷ÓÃÄ¿±ê×é¼þ
-		} catch (Throwable e) {
-			e.printStackTrace();
-			//log4j
-			Logger logger = Logger.getLogger(this.getClass());
-			ServletRequestAttributes sr = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-			HttpServletRequest request = sr.getRequest();
-			User user = (User)request.getSession().getAttribute("user");
-			String ip = request.getRemoteHost();
-			String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-			String className = p.getTarget().getClass().getName();
-			String methodName = p.getSignature().getName();
-			if(user != null) {
-				logger.error("ÓÃ»§[" + user.getCn_user_name() + "],");
-			}
-			logger.error("IP[" + ip + "],");
-			logger.error("ÔÚ[" + now + "],");
-			logger.error("µ÷ÓÃ[" + className + "." + methodName + "]Ê±£¬·¢ÉúÈçÏÂÒì³££º\n");
-			StackTraceElement[] elems = e.getStackTrace();
-			for(StackTraceElement elem : elems) {
-				logger.error("\t" + elem.toString() + "\n");
-			}
-			return new Result(false,"ÏµÍ³Òì³££¬ÇëÁªÏµ¹ÜÀíÔ±.",null);
-		}
-		return result;
-	}
+    @Around("within(cn.springmvc..*)")
+    public Object log(ProceedingJoinPoint p) throws Throwable {
+        Object result = null;
+        try {
+            result = p.proceed(); //调用目标组件
+        } catch (Throwable e) {
+            //e.printStackTrace();
+            //log4j
+            Logger logger = Logger.getLogger(this.getClass());
+            ServletRequestAttributes sr = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            HttpServletRequest request = sr.getRequest();
+            String ip = request.getRemoteHost();
+            String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+            String className = p.getTarget().getClass().getName();
+            String methodName = p.getSignature().getName();
+            logger.error("IP[" + ip + "],");
+            logger.error("在[" + now + "],");
+            logger.error("调用[" + className + "." + methodName + "]时,发生如下异常:");
+            logger.error("    ["+e.toString()+"]");
+            StackTraceElement[] elems = e.getStackTrace();
+            for(StackTraceElement elem : elems) {
+                logger.error("    " + elem.toString());
+            }
+            throw e;
+        }
+        return result;
+    }
 }
 
-<!-- Result -->
-
-public class Result implements Serializable {
-	private boolean success=true;
-	private String message;
-	private Object data;
+controller包下新建类BaseController
+@ControllerAdvice
+public class BaseController {
+    @ExceptionHandler(value=Throwable.class)
+    public ResponseEntity<Map<String, Object>> handleThrowable(Throwable e){
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("message", e.getLocalizedMessage());
+        return new ResponseEntity<Map<String, Object>>(map,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
 ```
