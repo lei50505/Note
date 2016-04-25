@@ -104,7 +104,8 @@ Workspace默认 -> /Users/CAOLEI/Documents/workspace-sts-3.6.4.RELEASE
 
 Preferences
 Install/Update -> Automatic Update -> 取消Automatically find...
-Java -> Installed JREs -> 选择JDK1.8 ->只有JRE需添加JDK
+Java -> Installed JREs -> 选择JDK1.8 -> 只有JRE需添加JDK -> Edit...
+Default VM arguments -> 填写 -Dmaven.multiModuleProjectDirectory=$M2_HOME
 Server -> Runtime Environments -> Add... -> Tomcat v8.0 + Create a new... -> OK -> Tomcat installation directory -> dev/tools/apache-tomcat-8.0.30 -> Finish
 Maven -> Installations -> Add... -> Installation home -> dev/tools/apache-maven-3.3.9 -> Finish -> 选择新添加 -> Apply
 General -> Editors -> Text Editors -> 选中Insert spaces for tabs -> OK
@@ -226,8 +227,8 @@ pom.xml
 		<finalName>my-web</finalName>
 </build>
 
-command + S 保存
 command + shift + F 格式化代码
+command + S 保存
 option + F5 更新项目
 
 my-web -> Properties -> Java Build Path -> Libraries
@@ -241,8 +242,6 @@ src/main/resources
 src/test/resources
 各添加a.txt防止空目录不上传
 
-command + S 保存
-
 my-web -> Properties -> Java Build Path -> Order and Export
 main/java
 main/resources
@@ -251,22 +250,13 @@ test/resources
 maven
 jre
 
-command + S 保存
-command + shift + F 格式化代码
-option + F5 更新项目
-
 my-web -> Properties -> Java Build Path -> Source
 main -> Output folder -> target/classes
 test -> Output folder -> target/test-classes
 
-my-web -> Properties -> Deployment Assembly
-/src/main...
-/target/m2e...
-Maven...
-
 改<packaging>war</packaging>
-command + S 保存
 command + shift + F 格式化代码
+command + S 保存
 option + F5 更新项目
 
 my-web -> Properties
@@ -362,6 +352,10 @@ git push -u origin master
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
+        
+command + shift + F 格式化代码
+command + S 保存
+option + F5 更新项目
 
 src/main/resources -> New -> Bean Configuration File
 applicationContext.xml
