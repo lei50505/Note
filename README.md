@@ -150,6 +150,12 @@ support-files/mysql.server stop
 support-files/mysql.server status
 ```
 
+* 安装Sequel Pro
+
+```
+双击sequel-pro-1.1.2.dmg -> 拷贝至应用程序
+```
+
 * 安装RabbitMQ
 
 ```
@@ -516,4 +522,304 @@ public class BaseController {
         return new ResponseEntity<Map<String, Object>>(map,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
+
+<!-- properties -->
+
+cn.rest -> 新建包util
+util包下新建类ConfigUtils
+public class ConfigUtils extends PropertyPlaceholderConfigurer {
+
+    private static final Map<String, Object> propertiesMap = new HashMap<String, Object>();
+
+    @Override
+    protected void processProperties(
+            ConfigurableListableBeanFactory beanFactoryToProcess,
+            Properties props) throws BeansException {
+        super.processProperties(beanFactoryToProcess, props);
+        for (Object key : props.keySet()) {
+            String keyStr = key.toString().trim();
+            propertiesMap.put(keyStr, props.getProperty(keyStr).trim());
+        }
+    }
+
+    public static String getString(String key) {
+        return propertiesMap.get(key).toString();
+    }
+
+    public static Integer getInt(String key) {
+        return Integer.valueOf(propertiesMap.get(key).toString());
+    }
+
+    public static Long getLong(String key) {
+        return Long.valueOf(propertiesMap.get(key).toString());
+    }
+}
+
+main/resources -> db.properties
+db.driver=com.mysql.jdbc.Driver
+db.url=jdbc:mysql://127.0.0.1:3306/webapp
+db.user=root
+db.password=password
+
+	<!-- 加载配置文件 -->
+	<!-- util:properties方式,类中@Value("#{jdbc[driver]}") -->
+	<!-- <util:properties id="jdbc" location="classpath:db.properties"></util:properties> -->
+	<!-- PropertyPlaceholderConfigurer方式,这里使用其扩展,以便其在源代码中使用,类中ConfigUtils.getString("db.driver") -->
+	<bean class="cn.rest.util.ConfigUtils">
+		<property name="locations">
+			<list>
+				<value>classpath:db.properties</value>
+			</list>
+		</property>
+		<property name="fileEncoding" value="UTF-8" />
+		<property name="ignoreResourceNotFound" value="false" />
+	</bean>
+```
+
+* 整合MyBatis
+
+```
+运行MySQL
+创建数据库和表
+CREATE DATABASE `web` DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+USE `web`;
+CREATE TABLE `user` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(16) NOT NULL DEFAULT '' COMMENT '姓名',
+  `sex` tinyint(1) NOT NULL COMMENT '性别',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+更改db.properties属性
+db.driver=com.mysql.jdbc.Driver
+db.url=jdbc:mysql://127.0.0.1:3306/web?useUnicode=true&characterEncoding=utf8
+db.user=root
+db.password=password
+
+<!-- BasicDataSource dbcp连接池 -->
+		
+		pom.xml
+		<!-- mysql-connector-java版本 -->
+		<mysql-connector-java.version>5.1.37</mysql-connector-java.version>
+		
+		<!-- mysql-connector-java -->
+		<!-- mysql-connector-java-5.1.37.jar -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql-connector-java.version}</version>
+		</dependency>
+		
+		<!-- commons-dbcp版本 -->
+		<commons-dbcp.version>1.4</commons-dbcp.version>
+		
+		<!-- commons-dbcp -->
+		<!-- commons-dbcp-1.4.jar -->
+		<!-- commons-pool-1.5.4.jar -->
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>${commons-dbcp.version}</version>
+		</dependency>
+		
+	<bean id="ds" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${db.driver}"></property>
+		<property name="url" value="${db.url}"></property>
+		<property name="username" value="${db.user}"></property>
+		<property name="password" value="${db.password}"></property>
+	</bean>
+	
+<!-- SqlSessionFactoryBean -->
+
+cn.rest -> 新建包entity
+entity包下新建类User
+实现序列化接口
+无参构造函数
+有参构造函数多个
+getter和setter方法
+重写equals和hashCode
+重写toString
+
+public class User implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    private Integer id;
+    private String name;
+    private Integer sex;
+    public User() {
+        super();
+    }
+    
+    public User(String name, Integer sex) {
+        super();
+        this.name = name;
+        this.sex = sex;
+    }
+
+    public User(Integer id, String name, Integer sex) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.sex = sex;
+    }
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public Integer getSex() {
+        return sex;
+    }
+    public void setSex(Integer sex) {
+        this.sex = sex;
+    }
+    @Override
+    public String toString() {
+        return "User [id=" + id + ", name=" + name + ", sex=" + sex + "]";
+    }
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        User other = (User) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
+    }
+}
+
+cn.rest -> 新建包dao
+dao包下新建接口UserDao
+public interface UserDao {
+    public void insert(User user);
+}
+
+dao包下新建UserMapper.xml
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="cn.rest.dao.UserDao">
+	<insert id="insert" parameterType="cn.rest.entity.User">
+		insert into `user`(`name`,`sex`) values(
+		  #{name,jdbcType=VARCHAR},
+		  #{sex,jdbcType=INTEGER}
+		)
+	</insert>
+</mapper>
+
+		pom.xml
+		<!-- mybatis-spring版本 -->
+		<mybatis-spring.version>1.2.3</mybatis-spring.version>
+		
+		<!-- mybatis-spring -->
+		<!-- mybatis-spring-1.2.3.jar -->
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>${mybatis-spring.version}</version>
+		</dependency>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="ds"></property>
+		<property name="mapperLocations" value="classpath:cn/rest/dao/*.xml"></property>
+	</bean>
+
+<!-- MapperScannerConfigurer -->
+		
+		pom.xml
+		<!-- mybatis版本 -->
+		<mybatis.version>3.3.0</mybatis.version>
+		
+		<!-- mybatis -->
+		<!-- mybatis-3.3.0.jar -->
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>${mybatis.version}</version>
+		</dependency>
+
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="cn.rest.dao"></property>
+		<!-- 可以用注解的方式查找dao -->
+		<!-- <property name="annotationClass" value="cn.springmvc.annotation.MyBatisRepository"></property> -->
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	</bean>
+	
+<!-- transactionManager -->
+
+		pom.xml
+		<!-- spring-jdbc -->
+		<!-- spring-jdbc-4.2.3.RELEASE.jar -->
+		<!-- spring-tx-4.2.3.RELEASE.jar -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+	
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="ds"></property>
+	</bean>
+	
+	<!-- 注解声明事务 -->
+	<!-- <tx:annotation-driven proxy-target-class="true" -->
+	<!-- transaction-manager="transactionManager" /> -->
+	<!-- 配置事务 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get*" propagation="NOT_SUPPORTED" />
+			<tx:method name="find*" propagation="NOT_SUPPORTED" />
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="*" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+	<aop:config expose-proxy="true">
+		<aop:pointcut expression="within(cn.rest.service..*)"
+			id="txPointcut" />
+		<aop:advisor pointcut-ref="txPointcut" advice-ref="txAdvice" />
+	</aop:config>
+	
+cn.rest -> 新建包service
+service包下新建接口UserService
+public interface UserService {
+    public void add(User user);
+}
+
+cn.rest -> 新建包service.impl
+service.impl包下新建类UserServiceImpl实现接口UserService
+@Service
+public class UserServiceImpl implements UserService {
+    
+    @Autowired
+    private UserDao userDao;
+
+    @Override
+    public void add(User user) {
+        userDao.insert(user);
+    }
+}
+
+
 ```
