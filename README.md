@@ -75,6 +75,7 @@ plugins=(git autojump)
 使用Pkg包安装
 vi ~/.zshrc
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home
+export PATH=$JAVA_HOME/bin:$PATH
 ```
 
 * 安装Maven
@@ -83,7 +84,8 @@ export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home
 cd ~/Documents/dev/tools/
 tar -xzvf ~/Downloads/apache-maven-3.3.9-bin.tar.gz
 vi ~/.zshrc
-export PATH=/Users/CAOLEI/Documents/dev/tools/apache-maven-3.3.9/bin:$PATH
+export M2_HOME=/Users/CAOLEI/Documents/dev/tools/apache-maven-3.3.9
+export PATH=$M2_HOME/bin:$PATH
 ```
 
 * 安装Tomcat8
@@ -153,6 +155,10 @@ set password = password("password");
 support-files/mysql.server restart
 support-files/mysql.server stop
 support-files/mysql.server status
+
+vi ~/.zshrc
+export MYSQL_HOME=/usr/local/mysql
+export PATH=$MYSQL_HOME/support-files:$MYSQL_HOME/bin:$PATH
 ```
 
 * 安装Sequel Pro
