@@ -132,3 +132,28 @@ Detailed Configuration -> Developer Machine -> Multifunctional Database -> Manua
 安装并注册navicat 10.0.10+注册机+注册码.rar
 ```
 
+* 安装WebStorm
+
+```
+安装WebStorm-10.0.4.exe
+激活
+User or company Name:
+EMBRACE
+===== LICENSE KEY=====
+24718-12042010
+00001h6wzKLpfo3gmjJ8xoTPw5mQvY
+YA8vwka9tH!vibaUKS4FIDIkUfy!!f
+3C"rQCIRbShpSlDcFT1xmJi5h0yQS6
+===== LICENSE END =====
+```
+
+* 安装Nginx
+
+```
+解压nginx-1.8.1.zip -> ...dev\tools
+进目录Shift + 右击 -> 在此处打开命令窗口 -> start nginx 运行
+nginx.exe -s stop 停止
+nginx.exe -s quit 正常退出
+nginx.exe -s reload 重新加载
+```
+
