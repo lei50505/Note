@@ -725,13 +725,26 @@ dao包下新建UserMapper.xml
 <!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
  "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
 <mapper namespace="cn.rest.dao.UserDao">
-	<insert id="insert" parameterType="cn.rest.entity.User">
-		insert into `user`(`name`,`sex`) values(
-		  #{name,jdbcType=VARCHAR},
-		  #{sex,jdbcType=INTEGER}
-		)
-	</insert>
+	<insert id="insert" parameterType="cn.rest.entity.User" useGeneratedKeys="true" keyProperty="id">
+        insert into `user`(`name`,`sex`) values(
+          #{name,jdbcType=VARCHAR},
+          #{sex,jdbcType=INTEGER}
+        )
+    </insert>
 </mapper>
+
+<!-- MyBatis插入对象时，自动在对象内补全主键
+对于支持自动生成主键的数据库(如SQL Server)，可以采用以下方式 
+<insert id="xxx" parameterType="yyy" useGeneratedKeys="true" keyProperty="id">
+.... 
+</insert>  
+对于不支持自动生成主键(如Oracle)，可以采用以下方式 
+<insert id="xxx" parameterType="yyy">   
+    <selectKey keyProperty="id" resultType="long" order="BEFORE"> 
+        select my_seq.nextval from dual  
+    </selectKey>   .... 
+</insert> 
+-->
 
 		pom.xml
 		<!-- mybatis-spring版本 -->
@@ -825,6 +838,5 @@ public class UserServiceImpl implements UserService {
         userDao.insert(user);
     }
 }
-
 
 ```
