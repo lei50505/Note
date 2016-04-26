@@ -19,14 +19,17 @@ git config --global push.default simple
 git config --global user.name "CAOLEI"
 git config --global user.email 183515951@qq.com
 
-C:\Users\CAOLEI\AppData\Local\Programs\Git\etc -> 右键Git GUI Here
-alias gst='git status'
-alias gl='git pull'
-alias gp='git push'
-alias gc='git commit'
-alias gm='git merge'
-alias gco='git checkout'
-alias gb='git branch'
+C:\Users\CAOLEI\AppData\Local\Programs\Git\etc -> 右键Git GUI Here打开文件位置 -> etc/bash.bashrc
 alias ga='git add'
+alias gb='git branch'
+alias gba='git branch -a'
+alias gc='git commit'
+alias gco='git checkout'
+alias gd='git diff'
+alias gl='git pull'
+alias glog='git log --oneline --decorate --color --graph'
+alias gm='git merge'
+alias gp='git push'
+alias gst='git status'
 ```
 
