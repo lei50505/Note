@@ -52,6 +52,11 @@ brew install git
 git config --global push.default simple
 git config --global user.name "CAOLEI"
 git config --global user.email 183515951@qq.com
+
+ssh-keygen -t rsa -b 4096 -C "183515951@qq.com"
+cd .ssh/
+cat id_rsa.pub
+添加到GitHub
 ```
 
 * 安装Oh My Zsh
