@@ -53,6 +53,6 @@ yum install jre
 wget http://apache.cs.utah.edu/tomcat/tomcat-8/v8.0.33/bin/apache-tomcat-8.0.33.tar.gz
 cd ~/dev/tools
 tar -zxvf ~/apache-tomcat-8.0.33.tar.gz
-
+./startup.sh
 ```
 

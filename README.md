@@ -494,7 +494,7 @@ aspect包下新建类ExceptionLogger
 @Component
 @Aspect
 public class ExceptionLogger {
-    @Around("within(cn.springmvc..*)")
+    @Around("within(cn.rest..*)")
     public Object log(ProceedingJoinPoint p) throws Throwable {
         Object result = null;
         try {
