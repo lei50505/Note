@@ -726,7 +726,7 @@ public interface UserDao {
     public void insert(User user);
 }
 
-dao包下新建UserMapper.xml
+main/resources/mapper下新建UserMapper.xml
 <?xml version="1.0" encoding="UTF-8" ?>  
 <!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
  "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
@@ -766,7 +766,7 @@ dao包下新建UserMapper.xml
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="ds"></property>
-		<property name="mapperLocations" value="classpath:cn/rest/dao/*.xml"></property>
+		<property name="mapperLocations" value="classpath:mapper/*.xml"></property>
 	</bean>
 
 <!-- MapperScannerConfigurer -->
@@ -844,5 +844,4 @@ public class UserServiceImpl implements UserService {
         userDao.insert(user);
     }
 }
-
 ```

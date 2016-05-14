@@ -39,6 +39,9 @@ GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' IDENTIFIED BY 'admin';
 把空用户帐户删除
 delete from mysql.user where user='';
 flush privileges;
+
+创建工作账户
+GRANT SELECT, INSERT, UPDATE, DELETE ON `my-feedback`.* TO 'fb'@'%' IDENTIFIED BY 'password';
 ```
 
 * 安装JRE

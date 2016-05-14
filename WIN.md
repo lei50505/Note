@@ -664,7 +664,7 @@ public interface UserDao {
     public void insert(User user);
 }
 
-dao包下新建UserMapper.xml
+main/resources/mapper下新建UserMapper.xml
 <?xml version="1.0" encoding="UTF-8" ?>  
 <!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
  "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
@@ -704,7 +704,7 @@ dao包下新建UserMapper.xml
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="ds"></property>
-		<property name="mapperLocations" value="classpath:cn/rest/dao/*.xml"></property>
+		<property name="mapperLocations" value="classpath:mapper/*.xml"></property>
 	</bean>
 
 <!-- MapperScannerConfigurer -->
@@ -786,5 +786,77 @@ public class UserServiceImpl implements UserService {
 GreetingController.class
 @Autowired
     private UserService userService;
+```
+
+*  SecurityFilter
+
+```
+filter包下新建类SecurityFilter
+@Component
+public class SecurityFilter implements Filter {
+    
+    private Logger log = Logger.getLogger(this.getClass());
+
+    @Override
+    public void destroy() {
+    }
+
+    @Override
+    public void doFilter(ServletRequest req, ServletResponse res,
+            FilterChain chain) throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) res;
+        //解决跨域问题
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        log.info("SecurityFilter过滤前 " );
+        if ("1".equals(request.getParameter("id"))) {
+            response.setContentType("application/json");
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            PrintWriter writer = response.getWriter();
+            writer.write("{\"message\":\"error\"}");
+            writer.flush();
+            writer.close();
+            return;
+        }
+        chain.doFilter(request, response);
+        log.info("SecurityFilter过滤后 ");
+        
+    }
+
+    @Override
+    public void init(FilterConfig arg0) throws ServletException {
+    }
+
+}
+
+	web.xml
+	<filter>
+		<filter-name>Encoding</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter>
+		<filter-name>securityFilter</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+		<init-param>
+			<param-name>targetFilterLifecycle</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>Encoding</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>securityFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
 ```
 
