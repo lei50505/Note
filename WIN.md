@@ -860,3 +860,12 @@ public class SecurityFilter implements Filter {
 	</filter-mapping>
 ```
 
+* 安装Redis
+
+```
+解压 Redis-x64-2.8.2400.zip -> dev/tools
+Shift + 鼠标右键
+启动 -> redis-server.exe redis.windows.conf
+控制台 -> redis-cli.exe
+```
+
