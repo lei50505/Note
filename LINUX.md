@@ -29,34 +29,38 @@ yum install mysql-server
 service mysqld start
 mysql -u root -p
 设置root密码
-set password = password("password");
+set password = password("caolei123");
 
 创建管理帐户，替换root工作
-GRANT ALL PRIVILEGES ON *.* TO 'admin'@'localhost' IDENTIFIED BY 'admin';
-GRANT ALL PRIVILEGES ON *.* TO 'admin'@'127.0.0.1' IDENTIFIED BY 'admin';
-GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' IDENTIFIED BY 'admin';
-
-把空用户帐户删除
-delete from mysql.user where user='';
-flush privileges;
+GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' IDENTIFIED BY 'caolei123';
 
 创建工作账户
-GRANT SELECT, INSERT, UPDATE, DELETE ON `my-feedback`.* TO 'fb'@'%' IDENTIFIED BY 'password';
+GRANT SELECT, INSERT, UPDATE, DELETE ON `my-feedback`.* TO 'fb'@'%' IDENTIFIED BY 'caolei123';
 ```
 
-* 安装JRE
+* 安装JDK8
 
 ```
-yum install jre
+wget --no-check-certificate --no-cookie --header "Cookie: oraclelicense=accept-securebackup-cookie;" http://download.oracle.com/otn-pub/java/jdk/8u91-b14/jdk-8u91-linux-x64.rpm
+
+rpm -ivh jdk-8u91-linux-x64.rpm
+
+vi /etc/profile.d/java.sh
+export JAVA_HOME=/usr/java/jdk1.8.0_91
+export PATH=$JAVA_HOME/bin:$PATH
 ```
 
 * 安装Tomcat
 
 ```
 wget http://apache.cs.utah.edu/tomcat/tomcat-8/v8.0.33/bin/apache-tomcat-8.0.33.tar.gz
+mkdir -p ~/dev/tools
 cd ~/dev/tools
 tar -zxvf ~/apache-tomcat-8.0.33.tar.gz
 ./startup.sh
+./shutdown.sh
+./catalina.sh run
+./catalina.sh start/stop
 ```
 
 * 更改密码
@@ -74,19 +78,12 @@ chmod +x shadowsocks-libev.sh
 
 ./shadowsocks-libev.sh 2>&1 | tee shadowsocks-libev.log
 password caolei123
+port 18989
 
 /etc/init.d/shadowsocks stop
 
 vi /etc/shadowsocks-libev/config.json
-{
-    "server":["[::0]","0.0.0.0"],
-    "server_port":your_server_port,
-    "local_address":"127.0.0.1",
-    "local_port":1080,
-    "password":"your_password",
-    "timeout":600,
-    "method":"aes-256-cfb"
-}
+"server":["[::0]","0.0.0.0"],
 
 /etc/init.d/shadowsocks start
 ```
@@ -106,6 +103,8 @@ bash vpn_centos6.sh
 * 安装Redis
 
 ```
+yum install gcc-c++
+
 wget http://download.redis.io/releases/redis-3.2.0.tar.gz
 tar xzf redis-3.2.0.tar.gz
 cd redis-3.2.0
@@ -113,12 +112,13 @@ make
 make install
 
 vi /root/redis-3.2.0/redis.conf
+port 63790
 # bind 127.0.0.1
 requirepass caolei123
 
 启动 redis-server /root/redis-3.2.0/redis.conf &
-停止 redis-cli -a caolei123 shutdown
+停止 redis-cli -p 63790 -a caolei123 shutdown
 
-连接 redis-cli.exe -h 144.168.63.86 -p 6379 -a caolei123
+连接 redis-cli -h 144.168.63.86 -p 63790 -a caolei123
 ```
 
