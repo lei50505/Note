@@ -845,3 +845,11 @@ public class UserServiceImpl implements UserService {
     }
 }
 ```
+
+* 安装Redis
+
+```
+brew install redis
+启动 redis-server &
+停止 redis-cli shutdown
+```
