@@ -59,3 +59,66 @@ tar -zxvf ~/apache-tomcat-8.0.33.tar.gz
 ./startup.sh
 ```
 
+* 更改密码
+
+```
+passwd
+```
+
+* 安装Shadowsocks
+
+```
+wget --no-check-certificate https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocks-libev.sh
+
+chmod +x shadowsocks-libev.sh
+
+./shadowsocks-libev.sh 2>&1 | tee shadowsocks-libev.log
+password caolei123
+
+/etc/init.d/shadowsocks stop
+
+vi /etc/shadowsocks-libev/config.json
+{
+    "server":["[::0]","0.0.0.0"],
+    "server_port":your_server_port,
+    "local_address":"127.0.0.1",
+    "local_port":1080,
+    "password":"your_password",
+    "timeout":600,
+    "method":"aes-256-cfb"
+}
+
+/etc/init.d/shadowsocks start
+```
+
+* 安装PPTP
+
+```
+wget http://www.hi-vps.com/shell/vpn_centos6.sh
+
+chmod a+x vpn_centos6.sh
+
+bash vpn_centos6.sh
+1
+3 -> pptp caolei123
+```
+
+* 安装Redis
+
+```
+wget http://download.redis.io/releases/redis-3.2.0.tar.gz
+tar xzf redis-3.2.0.tar.gz
+cd redis-3.2.0
+make
+make install
+
+vi /root/redis-3.2.0/redis.conf
+# bind 127.0.0.1
+requirepass caolei123
+
+启动 redis-server /root/redis-3.2.0/redis.conf &
+停止 redis-cli -a caolei123 shutdown
+
+连接 redis-cli.exe -h 144.168.63.86 -p 6379 -a caolei123
+```
+
