@@ -150,10 +150,15 @@ YA8vwka9tH!vibaUKS4FIDIkUfy!!f
 * 安装Nginx
 
 ```
-解压nginx-1.8.1.zip -> ...dev\tools
-进目录Shift + 右击 -> 在此处打开命令窗口 -> start nginx 运行
-nginx.exe -s stop 停止
-nginx.exe -s quit 正常退出
+解压nginx-1.8.1.zip -> ...D:\dev\tools
+
+新建 nginx-start.bat
+D:
+cd D:\dev\tools\nginx-1.8.1
+start nginx.exe
+
+nginx.exe -s stop 退出不保存
+nginx.exe -s quit 退出保存
 nginx.exe -s reload 重新加载
 ```
 
@@ -864,8 +869,22 @@ public class SecurityFilter implements Filter {
 
 ```
 解压 Redis-x64-2.8.2400.zip -> dev/tools
-Shift + 鼠标右键
-启动 -> redis-server.exe redis.windows.conf
-控制台 -> redis-cli.exe
+
+环境变量
+REDIS_HOME D:\dev\tools\Redis-x64-2.8.2400
+PATH %REDIS_HOME%;...
+
+编辑 redis.windows.conf
+port 63790
+requirepass caolei123
+
+新建 redis-server-start.bat
+redis-server D:\dev\tools\Redis-x64-2.8.2400\redis.windows.conf
+
+新建 redis-cli-loclahost.bat
+redis-cli -h localhost -p 63790 -a caolei123
+
+新建 redis-cli-bandwagonhost.bat
+redis-cli -h 144.168.63.86 -p 63790 -a caolei123
 ```
 
