@@ -28,9 +28,12 @@ git config --global user.email 183515951@qq.com
 
 C:\Users\CAOLEI\AppData\Local\Programs\Git\etc -> 右键Git GUI Here打开文件位置 -> etc/bash.bashrc
 alias ga='git add'
+alias gaa='git add -A'
 alias gb='git branch'
 alias gba='git branch -a'
 alias gc='git commit'
+alias gcm='git commit -m'
+alias gcmm='git commit -m "update"'
 alias gco='git checkout'
 alias gd='git diff'
 alias gl='git pull'
