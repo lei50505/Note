@@ -62,7 +62,7 @@ git push -u origin master
 安装jdk-8u77-windows-x64.exe
 配置环境变量
 新建 -> JAVA_HOME -> C:\Program Files\Java\jdk1.8.0_77
-PATH前加 -> %JAVA_HOME%\bin
+PATH前加 -> %JAVA_HOME%\bin;
 ```
 
 * 安装Maven
@@ -71,7 +71,7 @@ PATH前加 -> %JAVA_HOME%\bin
 解压apache-maven-3.3.9-bin.zip -> D:\dev\tools
 配置环境变量
 新建 -> M2_HOME -> D:\dev\tools\apache-maven-3.3.9
-PATH前加 -> %M2_HOME%\bin
+PATH前加 -> %M2_HOME%\bin;
 ```
 
 * 安装Tomcat8
@@ -115,7 +115,7 @@ Outline
 双击Tomcat v8.0 -> Open
 Server Locations -> 选中Use Tomcat installation...
 Deploy path -> webapps
-command + S 保存
+Ctrl + S 保存
 
 退出
 Confirm Exit -> 选中Always exit without prompt
