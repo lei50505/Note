@@ -68,6 +68,7 @@ $ sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools
 brew install autojump
 vi ~/.zshrc
 plugins=(git autojump)
+chsh -s /bin/zsh
 ```
 
 * 安装JDK8
